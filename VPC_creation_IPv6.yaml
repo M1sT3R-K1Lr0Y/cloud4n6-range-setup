@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template for creating VPCs, subnets, and associating IPv6 CIDR blocks
+
+Parameters:
+  VpcCidrBlockBlue:
+    Description: CIDR block for the Blue VPC
+    Type: String
+    Default: 10.0.0.0/23
+  VpcCidrBlockRed:
+    Description: CIDR block for the Red VPC
+    Type: String
+    Default: 10.1.0.0/23
+  VpcCidrBlockCyber:
+    Description: CIDR block for the Cyber VPC
+    Type: String
+    Default: 10.2.0.0/23
+
+Resources:
+  BlueVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlockBlue
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: blue-range
+
+  RedVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlockRed
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: red-range
+
+  CyberVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlockCyber
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: cyber-range
+
+  BluePublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BlueVPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: blue-subrange-1
+
+  BluePublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BlueVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: blue-subrange-2
+
+  BluePrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BlueVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: us-east-1a
+      Tags:
+        - Key: Name
+          Value: blue-private-range-1
+
+  BluePrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BlueVPC
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: us-east-1b
+      Tags:
+        - Key: Name
+          Value: blue-private-range-2
+
+  RedPublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RedVPC
+      CidrBlock: 10.1.0.0/24
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: red-subrange-1
+
+  RedPublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RedVPC
+      CidrBlock: 10.1.1.0/24
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: red-subrange-2
+
+  CyberPrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref CyberVPC
+      CidrBlock: 10.2.0.0/24
+      AvailabilityZone: us-east-1a
+      Tags:
+        - Key: Name
+          Value: cyber-subrange-1
+
+  CyberPrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref CyberVPC
+      CidrBlock: 10.2.1.0/24
+      AvailabilityZone: us-east-1b
+      Tags:
+        - Key: Name
+          Value: cyber-subrange-2
+
+  RedVpcIpv6CidrBlockAssociation:
+    Type: AWS::EC2::VPCCidrBlock
+    Properties:
+      VpcId: !Ref RedVPC
+      AmazonProvidedIpv6CidrBlock: true
+
+  CyberVpcIpv6CidrBlockAssociation:
+    Type: AWS::EC2::VPCCidrBlock
+    Properties:
+      VpcId: !Ref CyberVPC
+      AmazonProvidedIpv6CidrBlock: true
